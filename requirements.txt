@@ -1,0 +1,5 @@
+pyrogram==2.0.106
+tgcrypto==1.2.5
+aiohttp==3.9.0
+supabase==1.2.0
+python-dotenv==1.0.0
