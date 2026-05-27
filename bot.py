@@ -2,11 +2,16 @@ import logging
 import re
 import os
 import asyncio
+import sys
 from aiohttp import web
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from supabase import create_client
 from dotenv import load_dotenv
+
+# ---------- PYTHON 3.14+ FIX ----------
+if sys.version_info >= (3, 14):
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
@@ -255,6 +260,10 @@ async def list_admins_cmd(client: Client, message: Message):
 
 # ---------- Run Both Bot and Stream Server ----------
 async def main():
+    # Create a fresh event loop for this thread
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    
     web_app = web.Application()
     web_app.router.add_get('/stream/{file_id}', stream_file)
     
