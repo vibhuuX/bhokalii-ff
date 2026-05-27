@@ -103,6 +103,10 @@ async def stream_file(request):
         logging.error(f"Stream error: {e}")
         return web.Response(text="Streaming error", status=500)
 
+# ---------- Health Check for Render ----------
+async def health(request):
+    return web.Response(text="OK", status=200)
+
 # ---------- Bot Commands ----------
 @app.on_message(filters.command("start") & filters.private)
 async def start_cmd(client: Client, message: Message):
@@ -266,13 +270,14 @@ async def main():
     
     web_app = web.Application()
     web_app.router.add_get('/stream/{file_id}', stream_file)
+    web_app.router.add_get('/health', health)   # <-- Health check endpoint
     
     port = int(os.getenv("PORT", 8080))
     runner = web.AppRunner(web_app)
     await runner.setup()
     site = web.TCPSite(runner, "0.0.0.0", port)
     await site.start()
-    logging.info(f"Stream server running on port {port}")
+    logging.info(f"Health check & stream server running on port {port}")
     
     await app.start()
     logging.info("Bot started")
@@ -280,3 +285,8 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+
+
+
+
